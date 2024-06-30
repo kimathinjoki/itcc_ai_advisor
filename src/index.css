@@ -12,7 +12,7 @@ body {
 
 body::after {
   content: "";
-  background: url('components/resources/Logo_UMSL.png');
+  background: url('components/resources/logos/Logo_UMSL.png');
   opacity: 0.25;
   top: 0;
   left: 0;
