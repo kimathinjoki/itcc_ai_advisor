@@ -55,26 +55,7 @@ function OpenAiAsk() {
     setQuestion(e.target.value);
   };
 
-//   const handleQuestion = async () => {
-//     setLoading(true);
-//     const combinedText = localStorage.getItem('combinedText');
-//     try {
-//       const response = await openai.createChatCompletion({
-//         model: 'gpt-4-turbo',
-//         messages: [
-//           { role: 'system', content: 'You are a helpful assistant.' },
-//           { role: 'user', content: `Based on the following text and your general knowledge, answer the question:\n\n${combinedText}` },
-//           { role: 'user', content: `Question: ${question}` }
-//         ],
-//         max_tokens: 150,
-//       });
-//       setAnswer(response.data.choices[0].message.content.trim());
-//     } catch (error) {
-//       console.error('Error getting answer:', error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+
 
   const handleQuestion = async () => {
     setLoading(true);
@@ -93,11 +74,12 @@ function OpenAiAsk() {
         max_tokens: 150,
       });
       // Add answer to messages
-      setMessages([...messages, { type: 'question', text: question }, { type: 'answer', text: response.data.choices[0].message.content.trim() }]);
+      setMessages([...messages, { type: 'question', text: question, timestamp: new Date() }, { type: 'answer', text: response.data.choices[0].message.content.trim() }]);
     } catch (error) {
       console.error('Error getting answer:', error);
     } finally {
       setLoading(false);
+      
     }
   };
 
@@ -114,7 +96,7 @@ function OpenAiAsk() {
                 <div className={`p-3 rounded-lg ${message.type === 'question' ? 'bg-gray-300 rounded-r-lg rounded-bl-lg' : 'bg-blue-600 text-white rounded-l-lg rounded-br-lg'}`}>
                   <p className="text-sm">{message.text}</p>
                 </div>
-                <span className="text-xs text-gray-500 leading-none">2 min ago</span>
+                <span className="text-xs text-gray-500 leading-none">{message.timestamp ? message.timestamp.toLocaleTimeString() : ''}</span>
               </div>
               {message.type === 'answer' ? (
                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300" />
@@ -130,7 +112,9 @@ function OpenAiAsk() {
             onChange={handleInputChange}
           />
           <button
-            onClick={handleQuestion}
+            onClick={()=>{
+                handleQuestion();
+            }}
             disabled={loading}
             className="mt-4 bg-blue-600 text-white p-2 rounded"
           >
