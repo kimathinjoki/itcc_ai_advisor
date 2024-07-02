@@ -1,97 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { OpenAI } from 'openai';
-import pdfFile from '../resources/files/informationsystemsandtechnology.pdf';
-import docxFile from '../resources/files/Ist Certificates.docx';
+import React, {useState} from "react";
 
-const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true })
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-function GeminiAiAsk() {
-  const [question, setQuestion] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [assistant, setAssistant] = useState(null);
-  const [thread, setThread] = useState(null);
+const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
-  useEffect(() => {
-    const createAssistant = async () => {
-      const assistant = await openai.beta.assistants.create({
-        name: "Academic advisor Assistant",
-        instructions: "You are an academic advisor. Use you knowledge base to answer questions about classes.",
-        model: "gpt-4o",
-        tools: [{ type: "file_search" }],
-      });
 
-       // Check if the files have already been uploaded
-    const filesUploaded = localStorage.getItem('filesUploaded');
+ function GeminiAiAsk (){
+    const [question, setQuestion] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [messages, setMessages] = useState([]);
 
-    if (!filesUploaded) {
-      // Upload the files
-      const fileStreams = [pdfFile, docxFile];
-      let vectorStore = await openai.beta.vectorStores.create({ name: "Academic advisor" });
-      await openai.beta.vectorStores.fileBatches.uploadAndPoll(vectorStore.id, fileStreams);
-      await openai.beta.assistants.update(assistant.id, { tool_resources: { file_search: { vector_store_ids: [vectorStore.id] } } });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+    
+    const handleInputChange = (event) => {
+        setQuestion(event.target.value);
+      };
 
-      // Set the flag indicating that the files have been uploaded
-      localStorage.setItem('filesUploaded', 'true');
+    const handleQuestion = async () => {
+        setLoading(true);
+        const result = await model.generateContent(question);
+        const response = await result.response;
+        const text_answer = response.text();
+        // setMessages([...messages, { text: question, type: 'question', timestamp: new Date() }]);
+        // setMessages([...messages, { text: text_answer, type: 'answer', timestamp: new Date() }]);
+        setMessages([
+            ...messages,
+            { text: question, type: 'question', timestamp: new Date() },
+            { text: text_answer, type: 'answer', timestamp: new Date() },
+          ]);
+        console.log(messages)
+        setQuestion('');
+        setLoading(false);
     }
 
-      setAssistant(assistant);
 
-      const thread = await openai.beta.threads.create({ assistant_id: assistant.id });
-      setThread(thread);
-    };
 
-    createAssistant();
-  }, []);
-
-  const handleInputChange = (event) => {
-    setQuestion(event.target.value);
-  };
-
-  const handleQuestion = async () => {
-    if (!assistant || !thread) {
-      console.error('Assistant or thread not initialized');
-      return;
-    }
-
-    setLoading(true);
-
-    const stream = openai.beta.threads.runs
-      .stream(thread.id, { assistant_id: assistant.id })
-      .on("textCreated", () => console.log("assistant >"))
-      .on("toolCallCreated", (event) => console.log("assistant " + event.type))
-      .on("messageDone", async (event) => {
-        if (event.content[0].type === "text") {
-          const { text } = event.content[0];
-          const { annotations } = text;
-          const citations = [];
-
-          let index = 0;
-          for (let annotation of annotations) {
-            text.value = text.value.replace(annotation.text, "[" + index + "]");
-            const { file_citation } = annotation;
-            if (file_citation) {
-              const citedFile = await openai.files.retrieve(file_citation.file_id);
-              citations.push("[" + index + "]" + citedFile.filename);
-            }
-            index++;
-          }
-
-          console.log(text.value);
-          console.log(citations.join("\n"));
-
-          setMessages((prevMessages) => [...prevMessages, { type: 'answer', text: text.value, timestamp: new Date() }]);
-        }
-      });
-
-    setQuestion('');
-    setLoading(false);
-  };
-
-  
-  
-
-  return (
+    return(
+    <>
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col flex-grow w-full max-w-xl bg-transparent shadow-xl rounded-lg overflow-hidden border border-blue" style={{height: '700px', width: '700px'}}>
         <div className="flex-grow overflow-auto">
@@ -132,7 +77,9 @@ function GeminiAiAsk() {
         </div>
       </div>
     </div>
-  );
+    </>
+    )
+
 }
 
 export default GeminiAiAsk;
