@@ -3,7 +3,7 @@ import { OpenAI } from 'openai';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
 
-const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true })  // Replace with your actual API key
+const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true });
 
 
 const loadPdf = async (url) => {
@@ -33,7 +33,6 @@ function OpenAiAsk() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load files when the component mounts
     loadFiles();
   }, []);
 

@@ -3,7 +3,7 @@ import { OpenAI } from 'openai';
 import pdfFile from '../resources/files/informationsystemsandtechnology.pdf';
 import docxFile from '../resources/files/Ist Certificates.docx';
 
-const openai = new OpenAI({ apiKey: 'your-api-key', dangerouslyAllowBrowser: true });
+const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true })
 
 function GeminiAiAsk() {
   const [question, setQuestion] = useState('');
@@ -93,7 +93,7 @@ function GeminiAiAsk() {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col flex-grow w-full max-w-xl bg-transparent shadow-xl rounded-lg overflow-hidden" style={{height: '700px', width: '700px'}}>
+      <div className="flex flex-col flex-grow w-full max-w-xl bg-transparent shadow-xl rounded-lg overflow-hidden border border-blue" style={{height: '700px', width: '700px'}}>
         <div className="flex-grow overflow-auto">
           {messages.map((message, index) => (
             <div key={index} className={`flex w-full mt-2 space-x-3 max-w-xs ${message.type === 'answer' ? 'ml-auto justify-end' : ''}`}>

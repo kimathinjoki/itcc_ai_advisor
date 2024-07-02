@@ -7,6 +7,7 @@ import GeminiAiAsk from "./components/gemini/GeminiAsk";
 function App() {
   return (
     <>
+    <Navbar/>
     <Routes>
       <Route path="/" element={<Landingpage />} />
       <Route path="/openadvisor" element={<OpenAiAsk />} />
