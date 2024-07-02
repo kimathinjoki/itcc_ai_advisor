@@ -9,6 +9,8 @@ function GeminiAiAsk() {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [assistant, setAssistant] = useState(null);
+  const [thread, setThread] = useState(null);
 
   useEffect(() => {
     const createAssistant = async () => {
@@ -19,25 +21,24 @@ function GeminiAiAsk() {
         tools: [{ type: "file_search" }],
       });
 
-      // Here you would upload your files to the vector store and update the assistant
-      // For now, we'll just log the assistant
+       // Check if the files have already been uploaded
+    const filesUploaded = localStorage.getItem('filesUploaded');
 
+    if (!filesUploaded) {
+      // Upload the files
       const fileStreams = [pdfFile, docxFile];
-        
-        // Create a vector store including our two files.
-        let vectorStore = await openai.beta.vectorStores.create({
-            name: "Academic advisor",
-        });
-        
-        await openai.beta.vectorStores.fileBatches.uploadAndPoll(vectorStore.id, fileStreams)
+      let vectorStore = await openai.beta.vectorStores.create({ name: "Academic advisor" });
+      await openai.beta.vectorStores.fileBatches.uploadAndPoll(vectorStore.id, fileStreams);
+      await openai.beta.assistants.update(assistant.id, { tool_resources: { file_search: { vector_store_ids: [vectorStore.id] } } });
 
-        await openai.beta.assistants.update(assistant.id, {
-            tool_resources: { file_search: { vector_store_ids: [vectorStore.id] } },
-        });
+      // Set the flag indicating that the files have been uploaded
+      localStorage.setItem('filesUploaded', 'true');
+    }
 
+      setAssistant(assistant);
 
-
-      console.log(assistant);
+      const thread = await openai.beta.threads.create({ assistant_id: assistant.id });
+      setThread(thread);
     };
 
     createAssistant();
@@ -47,47 +48,45 @@ function GeminiAiAsk() {
     setQuestion(event.target.value);
   };
 
-
   const handleQuestion = async () => {
+    if (!assistant || !thread) {
+      console.error('Assistant or thread not initialized');
+      return;
+    }
 
+    setLoading(true);
 
-  setLoading(true);
+    const stream = openai.beta.threads.runs
+      .stream(thread.id, { assistant_id: assistant.id })
+      .on("textCreated", () => console.log("assistant >"))
+      .on("toolCallCreated", (event) => console.log("assistant " + event.type))
+      .on("messageDone", async (event) => {
+        if (event.content[0].type === "text") {
+          const { text } = event.content[0];
+          const { annotations } = text;
+          const citations = [];
 
-  // Call the OpenAI API to get the answer to the question
-  const stream = openai.beta.threads.runs
-    .stream(thread.id, {
-      assistant_id: assistant.id,
-    })
-    .on("textCreated", () => console.log("assistant >"))
-    .on("toolCallCreated", (event) => console.log("assistant " + event.type))
-    .on("messageDone", async (event) => {
-      if (event.content[0].type === "text") {
-        const { text } = event.content[0];
-        const { annotations } = text;
-        const citations = [];
-
-        let index = 0;
-        for (let annotation of annotations) {
-          text.value = text.value.replace(annotation.text, "[" + index + "]");
-          const { file_citation } = annotation;
-          if (file_citation) {
-            const citedFile = await openai.files.retrieve(file_citation.file_id);
-            citations.push("[" + index + "]" + citedFile.filename);
+          let index = 0;
+          for (let annotation of annotations) {
+            text.value = text.value.replace(annotation.text, "[" + index + "]");
+            const { file_citation } = annotation;
+            if (file_citation) {
+              const citedFile = await openai.files.retrieve(file_citation.file_id);
+              citations.push("[" + index + "]" + citedFile.filename);
+            }
+            index++;
           }
-          index++;
+
+          console.log(text.value);
+          console.log(citations.join("\n"));
+
+          setMessages((prevMessages) => [...prevMessages, { type: 'answer', text: text.value, timestamp: new Date() }]);
         }
+      });
 
-        console.log(text.value);
-        console.log(citations.join("\n"));
-
-        // Add the answer to the messages array
-        setMessages((prevMessages) => [...prevMessages, { type: 'answer', text: text.value, timestamp: new Date() }]);
-      }
-    });
-
-        setQuestion('');
-        setLoading(false);
-    };
+    setQuestion('');
+    setLoading(false);
+  };
 
   
   
