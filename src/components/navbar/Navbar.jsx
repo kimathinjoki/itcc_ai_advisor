@@ -1,5 +1,6 @@
 import itcc from '../resources/logos/logo-black-itcc-tmp.png'
 import umsl from '../resources/logos/umsllogo.jpeg'
+import { Link } from 'react-router-dom'
 
 function Navbar(){
 
@@ -26,13 +27,13 @@ function Navbar(){
                 {/* Active Link = text-indigo-500
                 Inactive Link = hover:text-indigo-500 */}
                 <li className="md:px-4 md:py-2 text-indigo-500">
-                    <a href="#">Home</a>
+                    <Link to='/'>Home</Link>
                 </li>
                 <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                    <a href="#">OpenAdvior</a>
+                    <Link to='openadvisor'>OpenAdvior</Link>
                 </li>
                 <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                    <a href="#">GemiAdvisor</a>
+                    <Link to='geminiadvisor'>GemiAdvisor</Link>
                 </li>
                 <li className="md:px-4 md:py-2 hover:text-indigo-400">
                     <a href="#">About</a>

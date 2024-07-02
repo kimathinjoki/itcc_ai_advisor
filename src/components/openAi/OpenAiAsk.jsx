@@ -40,10 +40,10 @@ function OpenAiAsk() {
   const loadFiles = async () => {
     setLoading(true);
     try {
-      const pdfText = await loadPdf('/path/to/your/pdf/file.pdf');  // Replace with the correct path
-      const wordText = await loadWord('/path/to/your/word/file.docx');  // Replace with the correct path
+      const pdfText = await loadPdf('../resources/files/informationsystemsandtechnology.pdf');  
+      const wordText = await loadWord('../resources/files/Ist Certificates.docx');  
       const combinedText = `${pdfText} ${wordText}`;
-      localStorage.setItem('combinedText', combinedText);  // Save combined text to local storage
+      localStorage.setItem('combinedText', combinedText);  
     } catch (error) {
       console.error('Error loading files:', error);
     } finally {
@@ -64,7 +64,7 @@ function OpenAiAsk() {
       // Add question to messages
       setMessages([...messages, { type: 'question', text: question }]);
       
-      const response = await openai.createChatCompletion({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
@@ -75,17 +75,18 @@ function OpenAiAsk() {
       });
       // Add answer to messages
       setMessages([...messages, { type: 'question', text: question, timestamp: new Date() }, { type: 'answer', text: response.data.choices[0].message.content.trim() }]);
+      
     } catch (error) {
       console.error('Error getting answer:', error);
     } finally {
-      setLoading(false);
-      
+      setLoading(false);   
     }
+    setQuestion('')
   };
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden" style={{height: '700px', width: '700px'}}>
+      <div className="flex flex-col flex-grow w-full max-w-xl  bg-transparent  shadow-xl rounded-lg overflow-hidden border border-black" style={{height: '700px', width: '700px'}}>
         <div className="flex-grow overflow-auto">
           {messages.map((message, index) => (
             <div key={index} className={`flex w-full mt-2 space-x-3 max-w-xs ${message.type === 'answer' ? 'ml-auto justify-end' : ''}`}>
@@ -109,6 +110,7 @@ function OpenAiAsk() {
             className="flex items-center h-10 w-full rounded px-3 text-sm"
             type="text"
             placeholder="Type your question…"
+            value={question}
             onChange={handleInputChange}
           />
           <button
