@@ -1,4 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import file1 from '../resources/files/informationsystemsandtechnology.docx';
+import file2 from '../resources/files/Ist Certificates.docx';
+import { loadPdf, loadWord } from "../../helpers/textConverter";
+
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -10,6 +14,35 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([]);
 
+
+    useEffect(() => {
+        loadFiles();
+      }, []);
+    
+      const loadFiles = async () => {
+        setLoading(true);
+        try {
+          const wordText1 = await loadWord(file1);  
+          const wordText2 = await loadWord(file2);  
+          const combinedText = `${wordText1} ${wordText2}`;
+          localStorage.setItem('combinedText', combinedText);  
+        
+        } catch (error) {
+          console.error('Error loading files:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      function fileToGenerativePart(path, mimeType) {
+        return {
+          inlineData: {
+            data: path,
+            mimeType
+          },
+        };
+      }
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
     
     const handleInputChange = (event) => {
@@ -18,7 +51,10 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
     const handleQuestion = async () => {
         setLoading(true);
-        const result = await model.generateContent(question);
+
+        const combinedText = [localStorage.getItem('combinedText')];
+
+        const result = await model.generateContent([`You are an academeic advisor, using general knowledge and content from the file answer: ${question}`, ...combinedText]);
         const response = await result.response;
         const text_answer = response.text();
         // setMessages([...messages, { text: question, type: 'question', timestamp: new Date() }]);

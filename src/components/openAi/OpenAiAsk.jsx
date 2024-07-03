@@ -1,30 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { OpenAI } from 'openai';
-import * as pdfjsLib from 'pdfjs-dist';
-import mammoth from 'mammoth';
+import { loadPdf, loadWord } from "../../helpers/textConverter";
 
 const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true });
 
 
-const loadPdf = async (url) => {
-  const pdf = await pdfjsLib.getDocument(url).promise;
-  let extractedText = '';
-  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-    const page = await pdf.getPage(pageNumber);
-    const textContent = await page.getTextContent();
-    textContent.items.forEach((item) => {
-      extractedText += item.str + ' ';
-    });
-  }
-  return extractedText;
-};
-
-const loadWord = async (url) => {
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const result = await mammoth.extractRawText({ arrayBuffer });
-  return result.value;
-};
 
 function OpenAiAsk() {
   const [question, setQuestion] = useState('');
