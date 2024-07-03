@@ -54,11 +54,9 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
         const combinedText = [localStorage.getItem('combinedText')];
 
-        const result = await model.generateContent([`You are an academeic advisor, using general knowledge and content from the file answer: ${question}`, ...combinedText]);
+        const result = await model.generateContent([`Without mentioning the document, you are an academeic advisor, if the question is about anything partaining the file use it. Else use your general knowledge to answer: ${question}`, ...combinedText]);
         const response = await result.response;
         const text_answer = response.text();
-        // setMessages([...messages, { text: question, type: 'question', timestamp: new Date() }]);
-        // setMessages([...messages, { text: text_answer, type: 'answer', timestamp: new Date() }]);
         setMessages([
             ...messages,
             { text: question, type: 'question', timestamp: new Date() },
