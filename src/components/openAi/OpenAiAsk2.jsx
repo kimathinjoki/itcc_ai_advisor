@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { OpenAI } from 'openai';
 import pdfFile from '../resources/files/informationsystemsandtechnology.pdf';
-import docxFile from '../resources/files/Ist Certificates.docx';
+import docxFile from '../resources/files/Ist_Certificates.docx';
 
 const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true })
 

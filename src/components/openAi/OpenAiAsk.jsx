@@ -20,7 +20,7 @@ function OpenAiAsk() {
     setLoading(true);
     try {
       const pdfText = await loadPdf('../resources/files/informationsystemsandtechnology.pdf');  
-      const wordText = await loadWord('../resources/files/Ist Certificates.docx');  
+      const wordText = await loadWord('../resources/files/Ist_Certificates.docx');  
       const combinedText = `${pdfText} ${wordText}`;
       localStorage.setItem('combinedText', combinedText);  
     } catch (error) {

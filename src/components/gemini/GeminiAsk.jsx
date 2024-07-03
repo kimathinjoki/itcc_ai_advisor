@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import file1 from '../resources/files/informationsystemsandtechnology.docx';
-import file2 from '../resources/files/Ist Certificates.docx';
+import file2 from '../resources/files/Ist_Certificates.docx';
 import { loadPdf, loadWord } from "../../helpers/textConverter";
 
 
