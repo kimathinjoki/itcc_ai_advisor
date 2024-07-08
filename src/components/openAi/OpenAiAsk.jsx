@@ -19,7 +19,7 @@ function OpenAiAsk() {
   const loadFiles = async () => {
     setLoading(true);
     try {
-      const pdfText = await loadPdf('../resources/files/informationsystemsandtechnology.pdf');  
+      const pdfText = await loadPdf('../resources/files/informationsystemsandtechnology.docx');  
       const wordText = await loadWord('../resources/files/Ist_Certificates.docx');  
       const combinedText = `${pdfText} ${wordText}`;
       localStorage.setItem('combinedText', combinedText);  
@@ -44,16 +44,14 @@ function OpenAiAsk() {
       setMessages([...messages, { type: 'question', text: question }]);
       
       const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo',
+        model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: `Based on the following text and your general knowledge, answer the question:\n\n${combinedText}` },
-          { role: 'user', content: `Question: ${question}` }
-        ],
-        max_tokens: 150,
+          { role: 'user', content: `Based on the following text: \n\n${combinedText} \n\nand your general knowledge, answer the question: ${question}` }
+        ]
       });
       // Add answer to messages
-      setMessages([...messages, { type: 'question', text: question, timestamp: new Date() }, { type: 'answer', text: response.data.choices[0].message.content.trim() }]);
+      setMessages([...messages, { type: 'question', text: question, timestamp: new Date() }, { type: 'answer', text: response.choices[0]}]);
       
     } catch (error) {
       console.error('Error getting answer:', error);
