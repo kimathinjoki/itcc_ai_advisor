@@ -48,8 +48,8 @@ To access this project on your local computer, follow the steps below
 To access the content on the browser:
 * click on this deployed link from vercel: https://itccaiadvisor.vercel.app/
   * or
-* Run <code>npm install</code> on the terminal to install node module dependancies
-* Run <code>npm start</code> on your terminal to start the live server
+* Run <code>npm install</code> on the terminal to install node module dependancies.
+* Run <code>npm start</code> on your terminal to start the live server.
 
 ### Usage
 
