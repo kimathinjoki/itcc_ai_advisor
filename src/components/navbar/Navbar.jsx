@@ -38,7 +38,7 @@ function Navbar(){
                     <Link to='geminiadvisor'>AutoAdvisor</Link>
                 </li>
                 <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                    <a href="#">About</a>
+                    <Link to="/about">About</Link>
                 </li>
                 
                 </ul>

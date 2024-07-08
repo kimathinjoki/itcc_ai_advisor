@@ -5,6 +5,7 @@ import Landingpage from "./components/landingpage/Landingpage";
 import GeminiAiAsk from "./components/gemini/GeminiAsk";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import About from "./components/temp/About";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/geminiadvisor" element={<GeminiAiAsk />} />
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Signup/>} />
+      <Route path="/about" element={<About/>} />
     </Routes>
     </>
   );
