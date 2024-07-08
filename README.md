@@ -8,22 +8,11 @@ ITCC AI Advisor is a simple website that provides information about certificates
 
 ## Prerequisites
 
-In order to use this repository, you will need to have the following setup in your computer.
+In order to use this repository locally, you will need to have the following setup in your computer.
 
 - <code>node v0.9.0+</code>
 - <code>npm 8.15.0+</code>
 
-
-## Project Setup
-
-To access this project on you local computer, follow the steps below
-* Open your terminal
-* Clone this repository:
-    - Run <code>git clone (git@github.com:MyDuka/MyDuka.git)</code>
-* Navigate into this repository
-    - <code>cd MyDuka</code>
-* Open Visual Studio Code:
-    - Run <code>code .</code>
 
 ## Technologies and Libraries Used
 
