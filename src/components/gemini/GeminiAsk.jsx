@@ -10,13 +10,20 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
 
  function GeminiAiAsk (){
-    const [question, setQuestion] = useState('');
+    const [question, setQuestion] = useState('How can you help?');
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([]);
 
 
-    useEffect(() => {
+    
+
+      useEffect(() => {
+        const postInitialQuestion = async () => {
+            await handleQuestion();
+        };
+    
         loadFiles();
+        postInitialQuestion();
       }, []);
     
       const loadFiles = async () => {
