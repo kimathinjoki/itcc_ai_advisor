@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { OpenAI } from 'openai';
 import { loadPdf, loadWord } from "../../helpers/textConverter";
 
-const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true });
+const openai = new OpenAI({ apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
 
 

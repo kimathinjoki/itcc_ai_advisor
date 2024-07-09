@@ -3,7 +3,7 @@ import { OpenAI } from 'openai';
 import pdfFile from '../resources/files/informationsystemsandtechnology.pdf';
 import docxFile from '../resources/files/Ist_Certificates.docx';
 
-const openai = new OpenAI({ apiKey: 'sk-proj-byfnGp0EmSqXuaOtBBXPT3BlbkFJeKHctjhiBlWg2bQbRiP6', dangerouslyAllowBrowser: true })
+const openai = new OpenAI({ apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true })
 
 function OpenAiAsk2() {
   const [question, setQuestion] = useState('');
