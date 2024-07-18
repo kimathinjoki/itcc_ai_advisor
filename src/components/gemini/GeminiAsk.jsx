@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import file1 from '../resources/files/informationsystemsandtechnology.docx';
 import file2 from '../resources/files/Ist_Certificates.docx';
 import { loadPdf, loadWord } from "../../helpers/textConverter";
-
+import ReactMarkdown from 'react-markdown';
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -10,7 +10,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
 
  function GeminiAiAsk (){
-    const [question, setQuestion] = useState('How can you help?');
+    const [question, setQuestion] = useState('');
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([]);
 
@@ -18,12 +18,12 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
     
 
       useEffect(() => {
-        const postInitialQuestion = async () => {
-            await handleQuestion();
-        };
+        // const postInitialQuestion = async () => {
+        //     await handleQuestion();
+        // };
     
         loadFiles();
-        postInitialQuestion();
+        // postInitialQuestion();
       }, []);
     
       const loadFiles = async () => {
@@ -61,7 +61,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
         const combinedText = [localStorage.getItem('combinedText')];
 
-        const result = await model.generateContent([`Without mentioning the document, you are an academeic advisor, if the question is about anything partaining the file use it. Else use your general knowledge to answer: ${question}`, ...combinedText]);
+        const result = await model.generateContent([`You are an academic advisor,if the question is about anything partaining the file use it. Else use your general knowledge to answer: ${question}`, ...combinedText]);
         const response = await result.response;
         const text_answer = response.text();
         setMessages([
@@ -70,6 +70,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
             { text: text_answer, type: 'answer', timestamp: new Date() },
           ]);
         console.log(messages)
+        console.log(text_answer)
         setQuestion('');
         setLoading(false);
     }
@@ -88,7 +89,8 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
               ) : null}
               <div>
                 <div className={`p-3 rounded-lg ${message.type === 'question' ? 'bg-gray-300 rounded-r-lg rounded-bl-lg' : 'bg-blue-600 text-white rounded-l-lg rounded-br-lg'}`}>
-                  <p className="text-sm">{message.text}</p>
+                  {/* <p className="text-sm">{message.text}</p> */}
+                  <ReactMarkdown className="text-sm">{message.text}</ReactMarkdown>
                 </div>
                 <span className="text-xs text-gray-500 leading-none">{message.timestamp ? message.timestamp.toLocaleTimeString() : ''}</span>
               </div>
@@ -99,6 +101,12 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
           ))}
         </div>
         <div className="bg-gray-300 p-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleQuestion();
+          }}
+        >
           <input
             className="flex items-center h-10 w-full rounded px-3 text-sm"
             type="text"
@@ -107,14 +115,15 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
             onChange={handleInputChange}
           />
           <button
-            onClick={()=>{
-                handleQuestion();
-            }}
+            // onClick={()=>{
+            //     handleQuestion();
+            // }}
             disabled={loading}
             className="mt-4 bg-blue-600 text-white p-2 rounded"
           >
             {loading ? 'Loading...' : 'Get Answer'}
           </button>
+          </form>
         </div>
       </div>
     </div>
