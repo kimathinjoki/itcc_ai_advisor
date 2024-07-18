@@ -1,4 +1,4 @@
-import itcc from '../resources/logos/logo-black-itcc-tmp.png'
+import itcc from '../resources/logos/UMSL_BUSINESS_BLK.png'
 import umsl from '../resources/logos/umsllogo.jpeg'
 import { Link } from 'react-router-dom'
 
@@ -13,15 +13,10 @@ function Navbar(){
             <div className="md:h-16 h-28 mx-auto md:px-4 container flex items-center justify-between flex-wrap md:flex-nowrap">
             {/* Logo */}
             <div className="text-indigo-500 md:order-1 flex">  
-            <img
-                src={umsl}
-                alt="itcc"
-                className="h-10 w-10"
-                />
                 <img
                 src={itcc}
                 alt="itcc"
-                className="h-10 w-10 ml-2"
+                className="mt-1 ml-2"
                 />
             </div>
             <div className="text-gray-500 order-3 w-full md:w-auto md:order-2">
