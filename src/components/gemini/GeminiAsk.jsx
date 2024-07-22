@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
 import file1 from '../resources/files/informationsystemsandtechnology.docx';
 import file2 from '../resources/files/Ist_Certificates.docx';
-import { loadPdf, loadWord } from "../../helpers/textConverter";
+import { loadWord } from "../../helpers/textConverter";
 import ReactMarkdown from 'react-markdown';
+import frequentQn  from '../resources/questions/frequentQn';
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -41,14 +42,14 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
         }
       };
 
-      function fileToGenerativePart(path, mimeType) {
-        return {
-          inlineData: {
-            data: path,
-            mimeType
-          },
-        };
-      }
+      // function fileToGenerativePart(path, mimeType) {
+      //   return {
+      //     inlineData: {
+      //       data: path,
+      //       mimeType
+      //     },
+      //   };
+      // }
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
     
@@ -75,12 +76,42 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
         setLoading(false);
     }
 
+    
+
 
 
     return(
-    <>
     <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col flex-grow w-full max-w-xl bg-transparent shadow-xl rounded-lg overflow-hidden border border-blue" style={{height: '700px', width: '700px'}}>
+  
+      {/* component */}
+      <div className="flex w-96 mr-6">
+        
+        <ul className="flex flex-col bg-gray-300 p-4">
+          <label className="text-center mb-2">Frequently asked questions</label>
+
+          {frequentQn.map((item, index) => (
+            <li 
+            key={index} 
+            onClick={()=>{
+              setQuestion(item);
+              handleQuestion();
+            }}
+            className="border-gray-400 flex flex-row mb-2">
+              <div className="select-none cursor-pointer bg-gray-200 rounded-md flex flex-1 items-center p-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex-1 pl-1 mr-16">
+                  <div className="font-small">{item}</div>
+                </div>
+              </div>
+            </li>
+          ))}
+         
+        </ul>
+      </div>
+
+
+
+    <div className="flex items-center justify-center h-screen mr-28">
+      <div className="flex flex-col flex-grow w-full max-w-xl bg-transparent shadow-xl rounded-lg overflow-hidden border border-blue m-auto" style={{height: '700px', width: '700px'}}>
         <div className="flex-grow overflow-auto">
           {messages.map((message, index) => (
             <div key={index} className={`flex w-full mt-2 space-x-3 max-w-xs ${message.type === 'answer' ? 'ml-auto justify-end' : ''}`}>
@@ -127,7 +158,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
         </div>
       </div>
     </div>
-    </>
+    </div>
     )
 
 }

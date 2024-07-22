@@ -1,0 +1,2 @@
+const frequentQn = ["What are the key differences between the IST BS, BSBA with IST emphasis, and the Cybersecurity BS?", "What are the program's admission requirements?", "What is the workload like for IST courses?", "How can I get involved in IST clubs and organizations?", "What are the faculty's research interests?"];
+export { frequentQn as default };
