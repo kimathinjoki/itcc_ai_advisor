@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import file1 from '../resources/files/informationsystemsandtechnology.docx';
 import file2 from '../resources/files/Ist_Certificates.docx';
+import file3 from '../resources/files/IST_bulletin.docx'
 import { loadWord } from "../../helpers/textConverter";
 import ReactMarkdown from 'react-markdown';
 import frequentQn  from '../resources/questions/frequentQn';
@@ -32,7 +33,8 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
         try {
           const wordText1 = await loadWord(file1);  
           const wordText2 = await loadWord(file2);  
-          const combinedText = `${wordText1} ${wordText2}`;
+          const wordText3 = await loadWord(file3); 
+          const combinedText = `${wordText1} ${wordText2} ${wordText3}`;
           localStorage.setItem('combinedText', combinedText);  
         
         } catch (error) {
