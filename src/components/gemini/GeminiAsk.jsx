@@ -64,7 +64,7 @@ const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 
         const combinedText = [localStorage.getItem('combinedText')];
 
-        const result = await model.generateContent([`You are an academic advisor,if the question is about anything partaining the file use it. Else use your general knowledge to answer: ${question}`, ...combinedText]);
+        const result = await model.generateContent([`You are an academic advisor. If the question is about anything pertaining to the provided information, use that knowledge to answer plus your genreral knowledge without explicitly mentioning or referencing the source. For questions outside the scope of the provided information, use your general knowledge to answer. Respond directly to the question without mentioning any documents or sources. Here's the question: ${question}`, ...combinedText]);
         const response = await result.response;
         const text_answer = response.text();
         setMessages([
